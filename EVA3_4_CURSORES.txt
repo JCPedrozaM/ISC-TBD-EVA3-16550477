@@ -1,0 +1,262 @@
+EVA3_4_CURSORES
+
+-----------------------------------------------------------------
+Cursores: Tabla temporal. Es un Select dentro de una función.
+-----------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `contar_clientes_cursor`() RETURNS int(11)
+
+BEGIN
+
+	declare conteo int;
+	declare customer_id text;
+    
+	#Variable Booleana de Control
+    
+	declare fin_cursor int default false; #Cuando lleguemos al final Verdad
+    
+	#Variable Cursor (select)
+    
+	declare cursor_clientes cursor for
+		
+		select customerid from customers;
+    
+	#Manejador (handler) para la Variable Booleana
+    
+	#Try catch
+    
+	declare continue handler for not found
+		
+		set fin_cursor = true;
+    
+	set conteo = 0;
+    
+	#Usar cursor
+    
+	open cursor_clientes;
+    
+	#Usamos un cliclo para recorrerlo
+    
+	ciclo_cursor: loop
+		
+		#Equivalente de iterate
+		
+		fetch cursor_clientes into customer_id;
+        
+		#Al llegar al final se produce nuestra excepción
+        
+		#Not found cambiamos la variable fin_cursor a true
+        
+		if fin_cursor then
+			
+			leave ciclo_cursor;
+		
+		else
+			
+			set conteo = conteo + 1;
+		
+		end if;
+    
+	end loop;
+    
+	close cursor_clientes;
+
+RETURN conteo;
+
+END
+
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select contar_clientes_cursor();
++--------------------------+
+| contar_clientes_cursor() |
++--------------------------+
+|                       93 |
++--------------------------+
+1 row in set (0.0116 sec)
+
+
+---------------------------------------------------------------------------------------
+Crear copias
+
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `contar_clientes_cursor`() RETURNS int(11)
+
+BEGIN
+
+	declare conteo int;
+	declare customer_id text;
+    
+	#Variable Booleana de Control
+    
+	declare fin_cursor int default false; #Cuando lleguemos al final Verdad
+    
+	#Variable Cursor (select)
+    
+	declare cursor_clientes cursor for
+		
+		select customerid from customers;
+    
+	#Manejador (handler) para la Variable Booleana
+    
+	#Try catch
+    
+	declare continue handler for not found
+		
+		set fin_cursor = true;
+    
+	set conteo = 0;
+    
+	#Usar cursor
+    
+	open cursor_clientes;
+    
+	#Usamos un cliclo para recorrerlo
+    
+	ciclo_cursor: loop
+		
+		#Equivalente de iterate
+		
+		fetch cursor_clientes into customer_id;
+        
+		#Al llegar al final se produce nuestra excepción
+        
+		#Not found cambiamos la variable fin_cursor a true
+        
+		if fin_cursor then
+			
+			leave ciclo_cursor;
+		
+		else
+
+			insert into temp_customer values(customer_id);
+			set conteo = conteo + 1;
+		
+		end if;
+    
+	end loop;
+    
+	close cursor_clientes;
+
+RETURN conteo;
+
+END
+
+ MySQL  localhost:3306 ssl  northwind  SQL > create table temp_customer(id varchar(5));
+Query OK, 0 rows affected (1.6089 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > desc temp_customer;
++-------+------------+------+-----+---------+-------+
+| Field | Type       | Null | Key | Default | Extra |
++-------+------------+------+-----+---------+-------+
+| id    | varchar(5) | YES  |     | NULL    |       |
++-------+------------+------+-----+---------+-------+
+1 row in set (0.0309 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select contar_clientes_cursor();
++--------------------------+
+| contar_clientes_cursor() |
++--------------------------+
+|                       93 |
++--------------------------+
+1 row in set (0.1540 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select * from temp_customer;
++-------+
+| id    |
++-------+
+| HUNGO |
+| Val2  |
+| VALON |
+| WOLZA |
+| QUICK |
+| QUEDE |
+| RICAR |
+| MORGK |
+| GOURL |
+| ANATR |
+| CENTC |
+| ANTON |
+| PERIC |
+| TORTU |
+| COMMI |
+| FAMIA |
+| HANAR |
+| QUEEN |
+| TRADH |
+| GALED |
+| WELLI |
+| CACTU |
+| OCEAN |
+| RANCH |
+| FRANS |
+| GROSR |
+| RICSU |
+| ALFKI |
+| BONAP |
+| KOENE |
+| FURIB |
+| SIMOB |
+| PRINI |
+| WILMK |
+| MAGAA |
+| ROMEY |
+| BOLID |
+| FISSA |
+| CHOPS |
+| LAMAI |
+| LILAS |
+| SANTG |
+| GODOS |
+| REGGC |
+| DUMON |
+| FRANR |
+| TOMSP |
+| LINOD |
+| PICCO |
+| HILAA |
+| OTTIK |
+| VINET |
+| DRACD |
+| FOLIG |
+| THECR |
+| LEHMS |
+| BLONP |
+| BLAUS |
+| VICTE |
+| WANDK |
+| PARIS |
+| SPECD |
+| LACOR |
+| ERNSH |
+| FRANK |
+| VAFFE |
+| SPLIR |
+| SAVEA |
+| RATTC |
+| WARTH |
+| LETSS |
+| THEBI |
+| LONEP |
+| GREAL |
+| HUNGC |
+| TRAIH |
+| WHITC |
+| LAZYK |
+| OLDWO |
+| MAISD |
+| SUPRD |
+| BSBEV |
+| MEREP |
+| SEVES |
+| ISLAT |
+| FOLKO |
+| BERGS |
+| NORTS |
+| BOTTM |
+| LAUGB |
+| AROUT |
+| CONSH |
+| EASTC |
++-------+
+93 rows in set (0.0005 sec)
+

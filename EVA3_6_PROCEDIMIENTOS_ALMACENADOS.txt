@@ -1,0 +1,212 @@
+EVA3_6_PROCEDIMIENTOS_ALMACENADOS
+
+Procedimientos Almacenados
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Consultar Clientes
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `consulta_clientes`()
+
+BEGIN
+
+	select customerid, companyname from customers;
+
+END
+
+ MySQL  localhost:3306 ssl  northwind  SQL > call consulta_clientes();
++------------+--------------------------------------+
+| customerid | companyname                          |
++------------+--------------------------------------+
+| ALFKI      | Alfreds Futterkiste                  |
+| ANATR      | Ana Trujillo Emparedados y helados   |
+| ANTON      | Antonio Moreno Taquera               |
+| AROUT      | Around the Horn                      |
+| BSBEV      | B's Beverages                        |
+| BERGS      | Berglunds snabbkp                    |
+| BLAUS      | Blauer See Delikatessen              |
+| BOLID      | Blido Comidas preparadas             |
+| BLONP      | Blondesddsl pre et fils              |
+| BONAP      | Bon app'                             |
+| BOTTM      | Bottom-Dollar Markets                |
+| CACTU      | Cactus Comidas para llevar           |
+| CENTC      | Centro comercial Moctezuma           |
+| CHOPS      | Chop-suey Chinese                    |
+| COMMI      | Comrcio Mineiro                      |
+| CONSH      | Consolidated Holdings                |
+| WANDK      | Die Wandernde Kuh                    |
+| DRACD      | Drachenblut Delikatessen             |
+| DUMON      | Du monde entier                      |
+| EASTC      | Eastern Connection                   |
+| ERNSH      | Ernst Handel                         |
+| FAMIA      | Familia Arquibaldo                   |
+| FISSA      | FISSA Fabrica Inter. Salchichas S.A. |
+| FOLIG      | Folies gourmandes                    |
+| FOLKO      | Folk och f HB                        |
+| FRANR      | France restauration                  |
+| FRANS      | Franchi S.p.A.                       |
+| FRANK      | Frankenversand                       |
+| FURIB      | Furia Bacalhau e Frutos do Mar       |
+| GALED      | Galera del gastrnomo                 |
+| GODOS      | Godos Cocina Tpica                   |
+| GOURL      | Gourmet Lanchonetes                  |
+| GREAL      | Great Lakes Food Market              |
+| GROSR      | GROSELLA-Restaurante                 |
+| HANAR      | Hanari Carnes                        |
+| HILAA      | HILARION-Abastos                     |
+| HUNGC      | Hungry Coyote Import Store           |
+| HUNGO      | Hungry Owl All-Night Grocers         |
+| ISLAT      | Island Trading                       |
+| Val2       | IT                                   |
+| VALON      | IT                                   |
+| KOENE      | Kniglich Essen                       |
+| LACOR      | La corne d'abondance                 |
+| LAMAI      | La maison d'Asie                     |
+| LAUGB      | Laughing Bacchus Wine Cellars        |
+| LAZYK      | Lazy K Kountry Store                 |
+| LEHMS      | Lehmanns Marktstand                  |
+| LETSS      | Let's Stop N Shop                    |
+| LILAS      | LILA-Supermercado                    |
+| LINOD      | LINO-Delicateses                     |
+| LONEP      | Lonesome Pine Restaurant             |
+| MAGAA      | Magazzini Alimentari Riuniti         |
+| MAISD      | Maison Dewey                         |
+| MORGK      | Morgenstern Gesundkost               |
+| MEREP      | Mre Paillarde                        |
+| NORTS      | North/South                          |
+| OCEAN      | Ocano Atlntico Ltda.                 |
+| OLDWO      | Old World Delicatessen               |
+| OTTIK      | Ottilies Kseladen                    |
+| PARIS      | Paris spcialits                      |
+| PERIC      | Pericles Comidas clsicas             |
+| PICCO      | Piccolo und mehr                     |
+| PRINI      | Princesa Isabel Vinhos               |
+| QUEDE      | Que Delcia                           |
+| QUEEN      | Queen Cozinha                        |
+| QUICK      | QUICK-Stop                           |
+| RANCH      | Rancho grande                        |
+| RATTC      | Rattlesnake Canyon Grocery           |
+| REGGC      | Reggiani Caseifici                   |
+| RICAR      | Ricardo Adocicados                   |
+| RICSU      | Richter Supermarkt                   |
+| ROMEY      | Romero y tomillo                     |
+| SANTG      | Sant Gourmet                         |
+| SAVEA      | Save-a-lot Markets                   |
+| SEVES      | Seven Seas Imports                   |
+| SIMOB      | Simons bistro                        |
+| SPECD      | Spcialits du monde                   |
+| SPLIR      | Split Rail Beer & Ale                |
+| SUPRD      | Suprmes dlices                       |
+| THEBI      | The Big Cheese                       |
+| THECR      | The Cracker Box                      |
+| TOMSP      | Toms Spezialitten                    |
+| TORTU      | Tortuga Restaurante                  |
+| TRADH      | Tradio Hipermercados                 |
+| TRAIH      | Trail's Head Gourmet Provisioners    |
+| VAFFE      | Vaffeljernet                         |
+| VICTE      | Victuailles en stock                 |
+| VINET      | Vins et alcools Chevalier            |
+| WARTH      | Wartian Herkku                       |
+| WELLI      | Wellington Importadora               |
+| WHITC      | White Clover Markets                 |
+| WILMK      | Wilman Kala                          |
+| WOLZA      | Wolski  Zajazd                       |
++------------+--------------------------------------+
+93 rows in set (0.0671 sec)
+Empty set (0.0671 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Contar Clientes
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `conteo_clientes`(out cont int)
+
+BEGIN
+
+	select count(*) into cont from customers;
+
+END
+
+
+ MySQL  localhost:3306 ssl  northwind  SQL > call conteo_clientes(@conteo);
+Query OK, 1 row affected (0.0491 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select @conteo;
++---------+
+| @conteo |
++---------+
+|      93 |
++---------+
+1 row in set (0.0010 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL >
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Contar Clientes Con Filtro
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `contar_clientes_filtro`(in letra text, out cont int)
+
+BEGIN
+
+	select count(*) into cont
+ 
+    	from customers
+
+    	where companyname like concat(letra,'%');
+
+END
+
+
+ MySQL  localhost:3306 ssl  northwind  SQL > call contar_clientes_filtro('A',@conteo);
+Query OK, 1 row affected (0.0370 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select @conteo;
++---------+
+| @conteo |
++---------+
+|       4 |
++---------+
+1 row in set (0.0002 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL >
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Agregar Región
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `agregar_region`(in nombre_region text)
+
+BEGIN
+	
+	declare clave int;
+    
+	select max(regionid) into clave from region;
+    
+	set clave = clave + 1;
+    
+	insert into region values(clave,nombre_region);
+
+END
+
+
+
+ MySQL  localhost:3306 ssl  northwind  SQL > call agregar_region('En un lugar de la mancha');
+Query OK, 1 row affected (0.3827 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select * from region;
++----------+----------------------------------------------------+
+| RegionID | RegionDescription                                  |
++----------+----------------------------------------------------+
+|        1 | Eastern                                            |
+|        2 | Westerns                                           |
+|        3 | Northern                                           |
+|        4 | Southern                                           |
+|        5 | En un lugar de la mancha                           |
++----------+----------------------------------------------------+
+5 rows in set (0.0004 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL >
+
+

@@ -1,0 +1,123 @@
+EVA3_5_CURSORES2
+
+
+Generar Clave RFC para cada Employee
+
+-crear duplicado de la tabla empleado
+-agregar campo rfc
+-generar función que use cursores que actualice el campo rfc para todos los empleados
+
+
+
+ MySQL  localhost:3306 ssl  northwind  SQL > create table employees_copia as select * from employees;
+Query OK, 9 rows affected (1.2081 sec)
+
+Records: 9  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  northwind  SQL > alter table employees_copia add column rfc varchar(12);
+Query OK, 0 rows affected (0.6323 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:3306 ssl  northwind  SQL > desc employees_copia;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| EmployeeID      | int(11)      | NO   |     | 0       |       |
+| LastName        | varchar(20)  | NO   |     | NULL    |       |
+| FirstName       | varchar(10)  | NO   |     | NULL    |       |
+| Title           | varchar(30)  | YES  |     | NULL    |       |
+| TitleOfCourtesy | varchar(25)  | YES  |     | NULL    |       |
+| BirthDate       | datetime     | YES  |     | NULL    |       |
+| HireDate        | datetime     | YES  |     | NULL    |       |
+| Address         | varchar(60)  | YES  |     | NULL    |       |
+| City            | varchar(15)  | YES  |     | NULL    |       |
+| Region          | varchar(15)  | YES  |     | NULL    |       |
+| PostalCode      | varchar(10)  | YES  |     | NULL    |       |
+| Country         | varchar(15)  | YES  |     | NULL    |       |
+| HomePhone       | varchar(24)  | YES  |     | NULL    |       |
+| Extension       | varchar(4)   | YES  |     | NULL    |       |
+| Notes           | mediumtext   | NO   |     | NULL    |       |
+| ReportsTo       | int(11)      | YES  |     | NULL    |       |
+| PhotoPath       | varchar(255) | YES  |     | NULL    |       |
+| Salary          | float        | YES  |     | NULL    |       |
+| rfc             | varchar(12)  | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+19 rows in set (0.0021 sec)
+
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `agregar_rfc`() RETURNS int(11)
+
+BEGIN
+	
+	declare nom text;
+    
+	declare apat text;
+    
+	declare fecha date;
+    
+	declare employee_id text;
+    
+	declare rfc_ text;
+    
+	declare fin_cursor int default false;
+    
+	declare cursor_employee cursor for
+		
+		select employeeid,firstname, lastname, birthdate from employees_copia;
+	
+	declare continue handler for not found
+		
+		set fin_cursor = true;
+	
+	open cursor_employee;
+    
+	ciclo_cursor: loop
+    
+	fetch cursor_employee into employee_id,nom,apat,fecha;
+     
+		if fin_cursor then
+			
+			leave ciclo_cursor;
+		
+		else
+			
+			set rfc_ = crear_rfc(nom,apat,'',fecha);
+            
+			update employees_copia set rfc = rfc_ where  employeeid = employee_id;
+			
+		end if;
+	
+	end loop;
+    
+	close cursor_employee;
+
+RETURN 1;
+
+END
+
+
+
+ select agregar_rfc();
++---------------+
+| agregar_rfc() |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.2636 sec)
+
+ MySQL  localhost:3306 ssl  northwind  SQL > select employeeid, firstname, lastname, rfc from employees_copia;
++------------+-----------+-----------+-------------+
+| employeeid | firstname | lastname  | rfc         |
++------------+-----------+-----------+-------------+
+|          1 | Nancy     | Davolio   | DAN19481208 |
+|          2 | Andrew    | Fuller    | FUA19520219 |
+|          3 | Janet     | Leverling | LEJ19630830 |
+|          4 | Margaret  | Peacock   | PEM19370919 |
+|          5 | Steven    | Buchanan  | BUS19550304 |
+|          6 | Michael   | Suyama    | SUM19630702 |
+|          7 | Robert    | King      | KIR19600529 |
+|          8 | Laura     | Callahan  | CAL19580109 |
+|          9 | Anne      | Dodsworth | DOA19660127 |
++------------+-----------+-----------+-------------+
+9 rows in set (0.0004 sec)
+
